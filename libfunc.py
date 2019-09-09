@@ -160,7 +160,7 @@ def calc_dist(full_dict):
                 
     return dist_dict
     
-def calc_trips(dict_of_coords_by_day):
+def calc_trips(full_dict):
     ''' Calculate TRIP_ROUTE
     Calculate distances and durations for each day of the week
     Output: dict of geometries for each day
