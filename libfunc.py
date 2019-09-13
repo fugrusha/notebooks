@@ -111,7 +111,7 @@ def schedule(df):
 
 
 
-def calc_routes(full_dict):
+def calc_routes(full_dict, source, dest):
     ''' Calculate SIMPLE_ROUTE for coords in a given order
     Calculate distances and durations for each day of the week
     Output: dict of geometries for each day
@@ -123,18 +123,22 @@ def calc_routes(full_dict):
             print('================== {} =================='.format(key))
             for key2, value2 in value.items():
                 print(key2)
-                coords = []
-                for point in value2:
-                    coords.append((point['Долгота'], point['Широта'])) 
-                result = xosrm.simple_route([30.6508, 46.4289], [30.6508, 46.4289], coords,
-                                    output='full', overview="full", geometry="geojson")
-                print(result['routes'][0]['distance']/1000, 'km')
-                print(result['routes'][0]['duration']/60.026, 'min')
+                if value2: # If list is empty (empty day)
+                    coords = []
+                    for point in value2:
+                        coords.append((point['Долгота'], point['Широта'])) 
+                    result = xosrm.simple_route(source, dest, coords,
+                                        output='full', overview="full", geometry="geojson")
+                    print(result['routes'][0]['distance']/1000, 'km')
+                    print(result['routes'][0]['duration']/60.026, 'min')
 
-                result_dict[key0][key][key2].append(result['routes'][0]['geometry'])
+                    result_dict[key0][key][key2].append(result['routes'][0]['geometry'])
+                else:
+                    pass
+                
     return result_dict
 
-def calc_dist(full_dict):
+def calc_dist(full_dict, source, dest):
     ''' Calculate distances for each day of the week
     Output: dict of distances
     '''
@@ -146,18 +150,21 @@ def calc_dist(full_dict):
         for key, value in value0.items():
             dist_dict[key0][key]= {}
             for key2, value2 in value.items():
-                coords = []
-                for point in value2:
-                    coords.append([point['Долгота'], point['Широта']])
-                # Office Vinnitsa
-                result = xosrm.simple_route([28.5673, 49.2226], [28.5673, 49.2226], coords,
-                                    output='full', overview="full", geometry="geojson")
-                #print(result['routes'][0]['distance']/1000, 'km')
-                #print(result['routes'][0]['duration']/60.026, 'min')
-                # Add distances to dict
-                distance = result['routes'][0]['distance']/1000
-                dist_dict[key0][key][key2] = distance
-                
+                if value2: # If list is empty (empty day)
+                    coords = []
+                    for point in value2:
+                        coords.append([point['Долгота'], point['Широта']])
+                    # Office Vinnitsa
+                    result = xosrm.simple_route(source, dest, coords,
+                                        output='full', overview="full", geometry="geojson")
+                    #print(result['routes'][0]['distance']/1000, 'km')
+                    #print(result['routes'][0]['duration']/60.026, 'min')
+                    # Add distances to dict
+                    distance = result['routes'][0]['distance']/1000
+                    dist_dict[key0][key][key2] = distance
+                else:
+                    pass
+
     return dist_dict
     
 def calc_trips(full_dict):
@@ -174,13 +181,16 @@ def calc_trips(full_dict):
         for key, value in value0.items():
             dist_dict[key0][key]= {}
             for key2, value2 in value.items():
-                coords = []
-                for point in value2:
-                    coords.append([point['Долгота'], point['Широта']])
-                result = xosrm.trip(coords, source='first', roundtrip=True,
-                                    output='full', overview="full", geometry="geojson")
-                distance = result['trips'][0]['distance']/1000
-                dist_dict[key0][key][key2] = distance
+                if value2:  # If list is empty (empty day)
+                    coords = []
+                    for point in value2:
+                        coords.append([point['Долгота'], point['Широта']])
+                    result = xosrm.trip(coords, source='first', roundtrip=True,
+                                        output='full', overview="full", geometry="geojson")
+                    distance = result['trips'][0]['distance']/1000
+                    dist_dict[key0][key][key2] = distance
+                else:
+                    pass
                     
     return dist_dict
     
