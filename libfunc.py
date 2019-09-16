@@ -1,10 +1,6 @@
-
-
-
 """
 ====== BLOCK OF FUNCTIONS ======
 """
-import core
 import xosrm
 
 import os
@@ -13,12 +9,12 @@ import pandas as pd
 
 
 def df_first(data):
-    df_first = pd.DataFrame(data['first_month_part']).T
+    df_first = pd.DataFrame(data['первая_половина_месяца']).T
     df_first.fillna(0, inplace=True)
     return df_first
 
 def df_second(data):
-    df_second = pd.DataFrame(data['second_month_part']).T
+    df_second = pd.DataFrame(data['вторая_половина_месяца']).T
     df_second.fillna(0, inplace=True)
     return df_second
 
@@ -39,14 +35,14 @@ def schedule(df):
     '''
     # Create nested dicts
     monthly_coords = {}
-    monthly_coords['first_month_part'] = {}
-    monthly_coords['second_month_part'] = {}
+    monthly_coords['первая_половина_месяца'] = {}
+    monthly_coords['вторая_половина_месяца'] = {}
     
-    monthly_coords['first_month_part']['even_part_of_coords'] = {}
-    monthly_coords['first_month_part']['odd_part_of_coords'] = {}
+    monthly_coords['первая_половина_месяца']['четная нед.'] = {}
+    monthly_coords['первая_половина_месяца']['не четная нед.'] = {}
     
-    monthly_coords['second_month_part']['even_part_of_coords'] = {}
-    monthly_coords['second_month_part']['odd_part_of_coords'] = {}
+    monthly_coords['вторая_половина_месяца']['четная нед.'] = {}
+    monthly_coords['вторая_половина_месяца']['не четная нед.'] = {}
     
     
     '''First part of the month'''
@@ -54,58 +50,58 @@ def schedule(df):
     first_part = df[df['№п/п четная нед.'].notnull() &
                                           (df['Интервал повторений'].isin([1,2,4]))]
     even_mon = first_part[first_part['Дни недели']==1].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['first_month_part']['even_part_of_coords']['1-monday'] = even_mon.to_dict('records')
+    monthly_coords['первая_половина_месяца']['четная нед.']['1-ПН'] = even_mon.to_dict('records')
     even_tue = first_part[first_part['Дни недели']==2].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['first_month_part']['even_part_of_coords']['2-tuesday'] = even_tue.to_dict('records')
+    monthly_coords['первая_половина_месяца']['четная нед.']['2-ВТ'] = even_tue.to_dict('records')
     even_wed = first_part[first_part['Дни недели']==3].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['first_month_part']['even_part_of_coords']['3-wednesday'] = even_wed.to_dict('records')
+    monthly_coords['первая_половина_месяца']['четная нед.']['3-СР'] = even_wed.to_dict('records')
     even_thu = first_part[first_part['Дни недели']==4].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['first_month_part']['even_part_of_coords']['4-thursday'] = even_thu.to_dict('records')
+    monthly_coords['первая_половина_месяца']['четная нед.']['4-ЧТ'] = even_thu.to_dict('records')
     even_fri = first_part[first_part['Дни недели']==5].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['first_month_part']['even_part_of_coords']['5-friday'] = even_fri.to_dict('records')
+    monthly_coords['первая_половина_месяца']['четная нед.']['5-ПТ'] = even_fri.to_dict('records')
     
     # Crete df for each day of odd week and add to dict
     first_part = df[df['№п/п не четная нед.'].notnull() &
                                           (df['Интервал повторений'].isin([1,2,4]))]
     odd_mon = first_part[first_part['Дни недели']==1].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['first_month_part']['odd_part_of_coords']['1-monday'] = odd_mon.to_dict('records')
+    monthly_coords['первая_половина_месяца']['не четная нед.']['1-ПН'] = odd_mon.to_dict('records')
     odd_tue = first_part[first_part['Дни недели']==2].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['first_month_part']['odd_part_of_coords']['2-tuesday'] = odd_tue.to_dict('records')
+    monthly_coords['первая_половина_месяца']['не четная нед.']['2-ВТ'] = odd_tue.to_dict('records')
     odd_wed = first_part[first_part['Дни недели']==3].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['first_month_part']['odd_part_of_coords']['3-wednesday'] = odd_wed.to_dict('records')
+    monthly_coords['первая_половина_месяца']['не четная нед.']['3-СР'] = odd_wed.to_dict('records')
     odd_thu = first_part[first_part['Дни недели']==4].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['first_month_part']['odd_part_of_coords']['4-thursday'] = odd_thu.to_dict('records')
+    monthly_coords['первая_половина_месяца']['не четная нед.']['4-ЧТ'] = odd_thu.to_dict('records')
     odd_fri = first_part[first_part['Дни недели']==5].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['first_month_part']['odd_part_of_coords']['5-friday'] = odd_fri.to_dict('records')
+    monthly_coords['первая_половина_месяца']['не четная нед.']['5-ПТ'] = odd_fri.to_dict('records')
     
     '''Second part of the month'''
     # Crete df for each day of even week and add to dict
     first_part = df[df['№п/п четная нед.'].notnull() &
                                           (df['Интервал повторений'].isin([1,2,8]))]
     even_mon = first_part[first_part['Дни недели']==1].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['second_month_part']['even_part_of_coords']['1-monday'] = even_mon.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['четная нед.']['1-ПН'] = even_mon.to_dict('records')
     even_tue = first_part[first_part['Дни недели']==2].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['second_month_part']['even_part_of_coords']['2-tuesday'] = even_tue.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['четная нед.']['2-ВТ'] = even_tue.to_dict('records')
     even_wed = first_part[first_part['Дни недели']==3].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['second_month_part']['even_part_of_coords']['3-wednesday'] = even_wed.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['четная нед.']['3-СР'] = even_wed.to_dict('records')
     even_thu = first_part[first_part['Дни недели']==4].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['second_month_part']['even_part_of_coords']['4-thursday'] = even_thu.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['четная нед.']['4-ЧТ'] = even_thu.to_dict('records')
     even_fri = first_part[first_part['Дни недели']==5].sort_values(by=['№п/п четная нед.'])
-    monthly_coords['second_month_part']['even_part_of_coords']['5-friday'] = even_fri.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['четная нед.']['5-ПТ'] = even_fri.to_dict('records')
     
     # Crete df for each day of odd week and add to dict
     first_part = df[df['№п/п не четная нед.'].notnull() &
                                           (df['Интервал повторений'].isin([1,2,8]))]
     odd_mon = first_part[first_part['Дни недели']==1].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['second_month_part']['odd_part_of_coords']['1-monday'] = odd_mon.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['не четная нед.']['1-ПН'] = odd_mon.to_dict('records')
     odd_tue = first_part[first_part['Дни недели']==2].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['second_month_part']['odd_part_of_coords']['2-tuesday'] = odd_tue.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['не четная нед.']['2-ВТ'] = odd_tue.to_dict('records')
     odd_wed = first_part[first_part['Дни недели']==3].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['second_month_part']['odd_part_of_coords']['3-wednesday'] = odd_wed.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['не четная нед.']['3-СР'] = odd_wed.to_dict('records')
     odd_thu = first_part[first_part['Дни недели']==4].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['second_month_part']['odd_part_of_coords']['4-thursday'] = odd_thu.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['не четная нед.']['4-ЧТ'] = odd_thu.to_dict('records')
     odd_fri = first_part[first_part['Дни недели']==5].sort_values(by=['№п/п не четная нед.'])
-    monthly_coords['second_month_part']['odd_part_of_coords']['5-friday'] = odd_fri.to_dict('records')
+    monthly_coords['вторая_половина_месяца']['не четная нед.']['5-ПТ'] = odd_fri.to_dict('records')
     
     return monthly_coords
 
@@ -154,10 +150,9 @@ def calc_dist(full_dict, source, dest):
                     coords = []
                     for point in value2:
                         coords.append([point['Долгота'], point['Широта']])
-                    # Office Vinnitsa
+
                     result = xosrm.simple_route(source, dest, coords,
                                         output='full', overview="full", geometry="geojson")
-                    #print(result['routes'][0]['distance']/1000, 'km')
                     #print(result['routes'][0]['duration']/60.026, 'min')
                     # Add distances to dict
                     distance = result['routes'][0]['distance']/1000
