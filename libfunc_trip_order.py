@@ -69,7 +69,7 @@ def calc_trips_order(full_dict):
                         point.update({'№п/п не четная нед.': result['waypoints'][index]['waypoint_index'] + 1})
                         point.update({'№п/п четная нед.': None})    
             else:
-                pass
+                dist_dict[key0][key2] = 0
             
     return dist_dict, result_dict
 
@@ -141,8 +141,12 @@ def calc_order_for_folder(path):
         # Add sheet to file
         merge_table.to_excel(writer, sheet_name = short_file_name)
 
+        dist_table = pd.DataFrame.from_dict(data[0], orient='columns')
+        dist_table.to_excel(writer, sheet_name = short_file_name + " пробег") 
+
 
         print("Расписание {} готово".format(short_file_name))
+        
     
     writer.save()
     writer.close()
