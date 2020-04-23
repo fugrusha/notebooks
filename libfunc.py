@@ -119,7 +119,7 @@ def calc_routes(full_dict):
             print('================== {} =================='.format(key))
             for key2, value2 in value.items():
                 print(key2)
-                if value2: # If list is empty (empty day)
+                if len(value2) > 1: # If list has more than 1 point
                     coords = []
                     for point in value2:
                         coords.append((point['Долгота'], point['Широта'])) 
@@ -150,7 +150,7 @@ def calc_dist(full_dict):
         for key, value in value0.items():
             dist_dict[key0][key]= {}
             for key2, value2 in value.items():
-                if value2: # If list is empty (empty day)
+                if len(value2) > 1: # If list has more than 1 point
                     coords = []
                     for point in value2:
                         coords.append([point['Долгота'], point['Широта']])
@@ -183,7 +183,7 @@ def calc_trips(full_dict):
         for key, value in value0.items():
             dist_dict[key0][key]= {}
             for key2, value2 in value.items():
-                if value2:  # If list is empty (empty day)
+                if len(value2) > 1: # If list has more than 1 point
                     coords = []
                     for point in value2:
                         coords.append([point['Долгота'], point['Широта']])

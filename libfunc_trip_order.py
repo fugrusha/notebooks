@@ -51,7 +51,7 @@ def calc_trips_order(full_dict):
     for key0, value0 in result_dict.items():
         dist_dict[key0] = {}
         for key2, value2 in value0.items():
-            if value2: # If list is empty (empty day)
+            if len(value2) > 1: # If list has more than 1 point
                 coords = []
                 for point in value2:
                     coords.append([point['Долгота'], point['Широта']])
