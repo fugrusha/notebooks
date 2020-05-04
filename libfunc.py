@@ -158,7 +158,7 @@ def calc_dist(full_dict):
                     source = coords[0]
                     dest = coords[0]
                     coords = coords[1:]
-                    result = xosrm.simple_route(source, dest, coords,
+                    result = xosrm.simple_route(source, dest, coords, continue_straight="false",
                                         output='full', overview="full", geometry="geojson")
                     
                     # Add distances to dict
